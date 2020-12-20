@@ -28,6 +28,7 @@ exports.create = (req, res) => {
         }
 
         if (!body || body.length < 200) {
+            
             return res.status(400).json({
                 error: 'Content is too short'
             });
@@ -48,7 +49,8 @@ exports.create = (req, res) => {
         const blog = new Blog();
         blog.title = title;
         blog.body = body;
-        blog.excerpt = smartTrim(body, 320, ' ', ' ...');
+        
+        blog.excerpt = smartTrim(body, 200, ' ', ' ...');
         blog.slug = slugify(title).toLowerCase();
         blog.mtitle = `${title} | ${process.env.APP_NAME}`;
         blog.mdesc = stripHtml(body.substring(0, 160));
@@ -68,6 +70,7 @@ exports.create = (req, res) => {
         }
 
         blog.save((err, result) => {
+            
             if (err) {
                 return res.status(400).json({
                     error: errorHandler(err)
@@ -222,7 +225,7 @@ exports.update = (req, res) => {
             const { body, desc, categories, tags } = fields;
 
             if (body) {
-                oldBlog.excerpt = smartTrim(body, 320, ' ', ' ...');
+                oldBlog.excerpt = smartTrim(body, 200, ' ', ' ...');
                 oldBlog.mdesc = stripHtml(body.substring(0, 160));
             }
 
